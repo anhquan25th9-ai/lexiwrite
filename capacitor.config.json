@@ -1,0 +1,10 @@
+{
+  "appId": "com.lexiwrite.app",
+  "appName": "LexiWrite",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "allowsLinkPreview": false,
+    "scrollEnabled": true
+  }
+}

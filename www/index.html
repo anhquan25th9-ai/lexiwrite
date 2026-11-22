@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LexiWrite">
+<link rel="apple-touch-icon" href="./icon.png">
+<title>LexiWrite — IELTS Writing 7.0–7.5</title>
+<style>
+:root {
+  --bg: #F2F2F7;
+  --card: #FFFFFF;
+  --text: #1C1C1E;
+  --sub: #636366;
+  --muted: #8E8E93;
+  --border: #E5E5EA;
+  --blue: #007AFF;
+  --blue-soft: rgba(0,122,255,0.12);
+  --green: #34C759;
+  --green-soft: rgba(52,199,89,0.14);
+  --orange: #FF9500;
+  --orange-soft: rgba(255,149,0,0.14);
+  --red: #FF3B30;
+  --red-soft: rgba(255,59,48,0.13);
+  --purple: #AF52DE;
+  --purple-soft: rgba(175,82,222,0.14);
+  --tab-bg: rgba(255,255,255,0.92);
+  --shadow: 0 2px 10px rgba(0,0,0,0.04);
+  --radius: 16px;
+}
+body.dark {
+  --bg: #000000;
+  --card: #1C1C1E;
+  --text: #F2F2F7;
+  --sub: #AEAEB2;
+  --muted: #8E8E93;
+  --border: #2C2C2E;
+  --blue: #0A84FF;
+  --blue-soft: rgba(10,132,255,0.2);
+  --green: #30D158;
+  --green-soft: rgba(48,209,88,0.2);
+  --orange: #FF9F0A;
+  --orange-soft: rgba(255,159,10,0.2);
+  --red: #FF453A;
+  --red-soft: rgba(255,69,58,0.2);
+  --purple: #BF5AF2;
+  --purple-soft: rgba(191,90,242,0.2);
+  --tab-bg: rgba(28,28,30,0.92);
+  --shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overscroll-behavior-y: none;
+}
+.header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--tab-bg);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 0.5px solid var(--border);
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.header-sub { font-size: 12px; color: var(--muted); font-weight: 500; }
+.icon-btn {
+  border: none; background: var(--blue-soft); color: var(--blue);
+  width: 36px; height: 36px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; font-weight: 600;
+}
+.container {
+  max-width: 680px; margin: 0 auto;
+  padding: 14px 14px calc(92px + env(safe-area-inset-bottom));
+}
+.search-box {
+  width: 100%; padding: 11px 14px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text); font-size: 15px; outline: none; margin-bottom: 10px;
+}
+.chips {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto; padding: 7px 13px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--sub); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 15px; margin-bottom: 12px; box-shadow: var(--shadow);
+  border: 0.5px solid var(--border);
+}
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.phrase { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.meaning { font-size: 14px; color: var(--sub); margin: 4px 0 10px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.badge {
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+  background: var(--blue-soft); color: var(--blue);
+}
+.badge.green { background: var(--green-soft); color: var(--green); }
+.badge.orange { background: var(--orange-soft); color: var(--orange); }
+.badge.red { background: var(--red-soft); color: var(--red); }
+.badge.purple { background: var(--purple-soft); color: var(--purple); }
+.box {
+  font-size: 13px; padding: 9px 11px; border-radius: 10px;
+  margin-top: 8px; line-height: 1.45;
+}
+.box.upgrade { background: var(--green-soft); }
+.box.trap { background: var(--red-soft); }
+.box.example { background: var(--bg); color: var(--text); }
+.box b { font-weight: 700; }
+.btn {
+  border: none; border-radius: 12px; padding: 11px 16px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  background: var(--blue); color: #fff;
+}
+.btn.sec { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn.red { background: var(--red); color: #fff; }
+.btn.green { background: var(--green); color: #fff; }
+.btn.orange { background: var(--orange); color: #fff; }
+.btn.sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+.btn:active { opacity: 0.75; transform: scale(0.98); }
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+  background: var(--tab-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--border);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+}
+.tab {
+  border: none; background: transparent; color: var(--muted);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+}
+.tab.active { color: var(--blue); }
+.tab svg { width: 22px; height: 22px; }
+.seg {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  background: var(--card); padding: 4px; border-radius: 12px;
+  border: 0.5px solid var(--border); margin-bottom: 12px;
+}
+.seg button {
+  border: none; background: transparent; color: var(--sub);
+  padding: 8px 4px; border-radius: 9px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.seg button.active { background: var(--blue); color: #fff; }
+.flashcard {
+  min-height: 270px; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  padding: 24px 18px; user-select: none; touch-action: pan-y;
+  transition: transform 0.15s ease;
+}
+.srs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.quiz-opt {
+  width: 100%; text-align: left; padding: 13px 14px; margin-top: 8px;
+  border-radius: 12px; border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.quiz-opt.ok { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+.quiz-opt.no { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+.field { margin-bottom: 10px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 4px; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  font-size: 14px; font-family: inherit;
+}
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+.stat-box {
+  background: var(--card); border-radius: 14px; padding: 14px 10px;
+  text-align: center; border: 0.5px solid var(--border);
+}
+.stat-num { font-size: 24px; font-weight: 800; color: var(--blue); }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 600; }
+.bar-bg { height: 8px; border-radius: 99px; background: var(--bg); overflow: hidden; margin-top: 6px; }
+.bar-fill { height: 100%; background: var(--blue); border-radius: 99px; }
+.hidden { display: none !important; }
+.toast {
+  position: fixed; top: calc(64px + env(safe-area-inset-top)); left: 50%;
+  transform: translateX(-50%); background: rgba(28,28,30,0.92); color: #fff;
+  padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>LexiWrite</h1>
+    <div class="header-sub" id="headerSub">Band 7.0–7.5 • 60 cụm từ</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="icon-btn" id="darkBtn" title="Chế độ tối">🌙</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<main class="container">
+  <!-- TAB 1: KHO TU -->
+  <section id="tab-bank">
+    <input class="search-box" id="searchInput" placeholder="Tìm cụm từ, nghĩa tiếng Việt, paraphrase...">
+    <div class="chips" id="topicChips"></div>
+    <div class="chips" id="filterChips"></div>
+    <div id="vocabList"></div>
+  </section>
+
+  <!-- TAB 2: LUYEN TAP -->
+  <section id="tab-practice" class="hidden">
+    <div class="seg" id="modeSeg">
+      <button data-mode="flash" class="active">Flashcard</button>
+      <button data-mode="trap">Bắt bẫy</button>
+      <button data-mode="type">Nâng cấp</button>
+      <button data-mode="audio">Nghe</button>
+    </div>
+    <div class="chips" id="practiceScopeChips"></div>
+    <div id="practiceArea"></div>
+  </section>
+
+  <!-- TAB 3: THEM TU -->
+  <section id="tab-add" class="hidden">
+    <div class="card">
+      <div class="row" style="margin-bottom:10px;">
+        <strong id="formTitle">Thêm cụm từ mới</strong>
+        <button class="btn sec sm hidden" id="cancelEditBtn">Hủy sửa</button>
+      </div>
+      <div class="field"><label>Cụm từ Band 7.0–7.5 *</label><input id="fPhrase" placeholder="vd: exert a detrimental impact on"></div>
+      <div class="field"><label>Nghĩa tiếng Việt *</label><input id="fMeaning" placeholder="vd: gây ra tác động có hại lên"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="field"><label>Chủ đề</label>
+          <select id="fTopic">
+            <option>Giáo dục</option><option>Công nghệ</option><option>Môi trường</option>
+            <option>Sức khỏe</option><option>Xã hội & Kinh tế</option><option>Task 1</option>
+          </select>
+        </div>
+        <div class="field"><label>Mạch lập luận</label>
+          <select id="fFlow">
+            <option>Nguyên nhân</option><option>Hệ quả</option><option>Giải pháp</option>
+            <option>Phản biện</option><option>Số liệu</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Thay cho (Band 5.5)</label><input id="fBasic" placeholder="vd: have a bad effect on"></div>
+      <div class="field"><label>Paraphrase đồng nghĩa</label><input id="fPara" placeholder="vd: have an adverse effect on / pose a threat to"></div>
+      <div class="field"><label>Bẫy ngữ pháp / Giới từ</label><input id="fTrap" placeholder="vd: impact ON (không dùng impact TO)"></div>
+      <div class="field"><label>Câu ví dụ</label><textarea id="fExample" rows="2" placeholder="Excessive screen time can exert a detrimental impact on children's eyesight."></textarea></div>
+      <button class="btn" style="width:100%" id="saveWordBtn">Lưu vào kho từ</button>
+    </div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:8px;">
+        <strong>Nhập hàng loạt (nhanh)</strong>
+        <button class="btn sec sm" id="fillSampleBtn">Điền mẫu</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+        Mỗi dòng 1 từ theo mẫu: <code>Cụm từ | Nghĩa Việt | Chủ đề | Band 5.5 | Bẫy ngữ pháp</code>
+      </div>
+      <textarea id="bulkInput" rows="4" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;"></textarea>
+      <button class="btn green" style="width:100%;margin-top:8px;" id="bulkImportBtn">Nhập danh sách</button>
+    </div>
+  </section>
+
+  <!-- TAB 4: TIEN DO -->
+  <section id="tab-stats" class="hidden">
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-num" id="stDue">0</div><div class="stat-lbl">Cần ôn hôm nay</div></div>
+      <div class="stat-box"><div class="stat-num" id="stMaster" style="color:var(--green)">0</div><div class="stat-lbl">Đã thuộc vững</div></div>
+      <div class="stat-box"><div class="stat-num" id="stStreak" style="color:var(--orange)">0</div><div class="stat-lbl">Chuỗi ngày 🔥</div></div>
+    </div>
+    <div class="card">
+      <strong>Tiến độ theo chủ đề</strong>
+      <div id="topicBars" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <strong>Sao lưu & Khôi phục dữ liệu</strong>
+      <p style="font-size:13px;color:var(--sub);margin:6px 0 12px;">Dữ liệu được lưu hoàn toàn offline trên iPhone. Bạn có thể xuất tệp JSON để sao lưu.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn sec" id="exportBtn">Xuất JSON</button>
+        <label class="btn sec" style="display:inline-flex;align-items:center;cursor:pointer;">
+          Nhập JSON<input type="file" id="importFile" accept=".json" class="hidden">
+        </label>
+        <button class="btn red sm" id="resetBtn" style="margin-left:auto;">Khôi phục mặc định</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="tab active" data-tab="bank">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Kho từ
+  </button>
+  <button class="tab" data-tab="practice">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Luyện tập
+  </button>
+  <button class="tab" data-tab="add">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Thêm từ
+  </button>
+  <button class="tab" data-tab="stats">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Tiến độ
+  </button>
+</nav>
+
+<script>
+const DEFAULT_WORDS = [
+  // GIÁO DỤC (10)
+  {id:1,phrase:"acquire practical skills",meaning:"tiếp thu kỹ năng thực tế",topic:"Giáo dục",flow:"Giải pháp",basic:"get useful skills",para:"gain hands-on experience / develop job-ready skills",trap:"acquire + N (không dùng acquire to)",example:"Vocational courses allow students to acquire practical skills directly relevant to the workplace.",q:"Vocational courses help learners ___ practical skills.",opts:["acquire","receive","take","bring"],ans:0},
+  {id:2,phrase:"broaden one's horizons",meaning:"mở rộng tầm nhìn, hiểu biết",topic:"Giáo dục",flow:"Hệ quả",basic:"know more things",para:"expand one's worldview / gain deeper insight",trap:"horizons luôn ở dạng số nhiều (có 's')",example:"Studying abroad enables young people to broaden their horizons and adapt to new cultures.",q:"Studying abroad helps students broaden their ___.",opts:["horizon","horizons","view","sky"],ans:1},
+  {id:3,phrase:"place heavy emphasis on",meaning:"đặt trọng tâm lớn vào",topic:"Giáo dục",flow:"Nguyên nhân",basic:"focus a lot on",para:"attach great importance to / prioritize",trap:"emphasis ON (không dùng emphasis IN/FOR)",example:"Many schools still place heavy emphasis on rote memorization rather than critical thinking.",q:"Traditional schools often place heavy emphasis ___ exam scores.",opts:["in","for","on","at"],ans:2},
+  {id:4,phrase:"foster critical thinking",meaning:"nuôi dưỡng tư duy phản biện",topic:"Giáo dục",flow:"Giải pháp",basic:"help students think better",para:"cultivate analytical skills / encourage independent thought",trap:"foster + N trực tiếp, không có giới từ",example:"Group debates in class are an effective way to foster critical thinking among teenagers.",q:"Project-based learning can effectively ___ critical thinking.",opts:["foster","make","do","create"],ans:0},
+  {id:5,phrase:"alleviate academic pressure",meaning:"giảm bớt áp lực học tập",topic:"Giáo dục",flow:"Giải pháp",basic:"reduce study stress",para:"ease exam stress / lessen the burden of homework",trap:"pressure không đếm được trong ngữ cảnh này (không thêm 'a')",example:"Reducing unnecessary standardized tests can significantly alleviate academic pressure on high schoolers.",q:"Flexible curricula can ___ academic pressure on students.",opts:["alleviate","decline","fall","drop"],ans:0},
+  {id:6,phrase:"bridge the educational gap",meaning:"thu hẹp khoảng cách giáo dục",topic:"Giáo dục",flow:"Giải pháp",basic:"make education more equal",para:"narrow the disparity in education / ensure equal access",trap:"dùng 'bridge/narrow the gap', tránh dùng 'close small gap'",example:"Free online platforms can help bridge the educational gap between urban and rural areas.",q:"Government scholarships help ___ the educational gap.",opts:["bridge","connect","join","link"],ans:0},
+  {id:7,phrase:"pursue higher education",meaning:"theo đuổi bậc giáo dục đại học",topic:"Giáo dục",flow:"Nguyên nhân",basic:"go to university",para:"attend tertiary education / enroll in a degree program",trap:"pursue + N trực tiếp (không dùng pursue to/for)",example:"Rising tuition fees deter low-income students from pursuing higher education.",q:"Many graduates decide to ___ higher education overseas.",opts:["pursue","follow","chase","go"],ans:0},
+  {id:8,phrase:"rote memorization",meaning:"học vẹt, học thuộc lòng máy móc",topic:"Giáo dục",flow:"Phản biện",basic:"learning by heart without understanding",para:"mechanical learning / passive absorption of facts",trap:"danh từ không đếm được, không dùng 'a rote memorization'",example:"Over-reliance on rote memorization fails to prepare students for real-world problem solving.",q:"Exams that rely solely on ___ memorization are outdated.",opts:["rote","root","route","rough"],ans:0},
+  {id:9,phrase:"well-rounded development",meaning:"sự phát triển toàn diện",topic:"Giáo dục",flow:"Hệ quả",basic:"good growth in every way",para:"holistic development / balanced personal growth",trap:"well-rounded có dấu gạch nối khi đứng trước danh từ",example:"Extracurricular activities play a vital role in children's well-rounded development.",q:"Sports and arts are essential for ___ development.",opts:["well-rounded","full-round","all-roundly","round-well"],ans:0},
+  {id:10,phrase:"deter someone from V-ing",meaning:"ngăn cản ai làm gì",topic:"Giáo dục",flow:"Hệ quả",basic:"stop someone from doing",para:"discourage someone from / prevent someone from",trap:"deter sb FROM + V-ing (không dùng deter to V)",example:"High living costs may deter talented applicants from studying in major cities.",q:"High tuition fees may deter students ___ applying.",opts:["to","from","of","against"],ans:1},
+
+  // CÔNG NGHỆ (10)
+  {id:11,phrase:"rely heavily on",meaning:"phụ thuộc nặng nề vào",topic:"Công nghệ",flow:"Nguyên nhân",basic:"depend a lot on",para:"be overly dependent on / hinge on",trap:"rely ON (không dùng rely IN/TO)",example:"Modern workers rely heavily on digital tools to complete daily tasks efficiently.",q:"Young generations tend to rely heavily ___ smartphones.",opts:["in","to","on","at"],ans:2},
+  {id:12,phrase:"render human labor obsolete",meaning:"khiến sức lao động con người trở nên lỗi thời",topic:"Công nghệ",flow:"Hệ quả",basic:"make human jobs useless",para:"replace manual workers / displace traditional jobs",trap:"render + O + Adj (obsolete là tính từ)",example:"Rapid advances in automation could render certain types of human labor obsolete.",q:"Automation may render repetitive manual jobs ___.",opts:["obsolete","obsoletely","outdating","uselessness"],ans:0},
+  {id:13,phrase:"streamline daily operations",meaning:"tối ưu hóa/tinh gọn quy trình hàng ngày",topic:"Công nghệ",flow:"Giải pháp",basic:"make daily work easier and faster",para:"optimize workflow / enhance operational efficiency",trap:"streamline là ngoại động từ, đi thẳng với tân ngữ",example:"Cloud software enables small businesses to streamline daily operations and cut costs.",q:"AI tools help companies ___ daily operations.",opts:["streamline","straightline","fasten","quicken"],ans:0},
+  {id:14,phrase:"invade personal privacy",meaning:"xâm phạm quyền riêng tư cá nhân",topic:"Công nghệ",flow:"Hệ quả",basic:"break people's privacy",para:"violate data privacy / compromise personal information",trap:"invade + N trực tiếp (không dùng invade into)",example:"Unregulated data collection by tech giants can seriously invade personal privacy.",q:"Targeted ads often ___ users' personal privacy.",opts:["invade","invade into","enter","break in"],ans:0},
+  {id:15,phrase:"spread misinformation rapidly",meaning:"lan truyền thông tin sai lệch nhanh chóng",topic:"Công nghệ",flow:"Hệ quả",basic:"share fake news fast",para:"disseminate false information / fuel rumors",trap:"misinformation là danh từ không đếm được (không có 's')",example:"Social media algorithms can inadvertently spread misinformation rapidly during crises.",q:"Unverified posts can spread ___ rapidly online.",opts:["misinformation","misinformations","a misinformation","false news"],ans:0},
+  {id:16,phrase:"foster global connectivity",meaning:"thúc đẩy sự kết nối toàn cầu",topic:"Công nghệ",flow:"Hệ quả",basic:"connect people around the world",para:"facilitate cross-border communication / bridge geographical distances",trap:"connectivity không đếm được",example:"High-speed internet continues to foster global connectivity among remote teams.",q:"Video conferencing apps ___ global connectivity.",opts:["foster","rise","grow up","make"],ans:0},
+  {id:17,phrase:"pose a threat to cybersecurity",meaning:"gây ra mối đe dọa cho an ninh mạng",topic:"Công nghệ",flow:"Hệ quả",basic:"be dangerous for online safety",para:"jeopardize data security / create cyber vulnerabilities",trap:"pose a threat TO (không dùng threat FOR)",example:"Weak passwords pose a serious threat to personal and corporate cybersecurity.",q:"Phishing emails pose a major threat ___ cybersecurity.",opts:["for","to","with","on"],ans:1},
+  {id:18,phrase:"strike a balance between",meaning:"tìm được sự cân bằng giữa",topic:"Công nghệ",flow:"Giải pháp",basic:"keep a good balance between",para:"find a middle ground / maintain equilibrium",trap:"strike A balance BETWEEN A and B",example:"Parents must strike a balance between allowing screen time and encouraging outdoor play.",q:"Users need to ___ a balance between online and offline life.",opts:["strike","hit","beat","do"],ans:0},
+  {id:19,phrase:"exacerbate social isolation",meaning:"làm trầm trọng thêm sự cô lập xã hội",topic:"Công nghệ",flow:"Hệ quả",basic:"make loneliness worse",para:"worsen feelings of alienation / deepen disconnection",trap:"exacerbate luôn đi với vấn đề tiêu cực",example:"Excessive reliance on virtual interactions can exacerbate social isolation among young adults.",q:"Overusing social media may ___ social isolation.",opts:["exacerbate","improve","raise","grow"],ans:0},
+  {id:20,phrase:"keep pace with",meaning:"bắt kịp với (tốc độ thay đổi)",topic:"Công nghệ",flow:"Phản biện",basic:"follow fast changes",para:"stay abreast of / adapt to rapid changes",trap:"keep pace WITH (không dùng keep pace TO)",example:"Older employees sometimes struggle to keep pace with rapidly evolving software.",q:"Laws often fail to keep pace ___ technological innovation.",opts:["to","on","with","for"],ans:2},
+
+  // MÔI TRƯỜNG (10)
+  {id:21,phrase:"mitigate climate change",meaning:"giảm thiểu biến đổi khí hậu",topic:"Môi trường",flow:"Giải pháp",basic:"reduce climate change",para:"curb global warming / tackle environmental degradation",trap:"mitigate + vấn đề xấu (không dùng mitigate to)",example:"Transitioning to solar energy is essential to mitigate climate change effectively.",q:"Reforestation plays a key role in ___ climate change.",opts:["mitigating","declining","dropping","falling"],ans:0},
+  {id:22,phrase:"curb carbon emissions",meaning:"kiềm chế lượng khí thải carbon",topic:"Môi trường",flow:"Giải pháp",basic:"cut down CO2",para:"reduce greenhouse gases / lower carbon footprint",trap:"emissions thường dùng số nhiều",example:"Stricter regulations on factories are necessary to curb carbon emissions.",q:"Public transit investment helps ___ carbon emissions.",opts:["curb","stop up","close","block"],ans:0},
+  {id:23,phrase:"deplete natural resources",meaning:"làm cạn kiệt tài nguyên thiên nhiên",topic:"Môi trường",flow:"Hệ quả",basic:"use up natural things",para:"exhaust finite resources / overexploit raw materials",trap:"deplete là ngoại động từ, đi thẳng với tân ngữ",example:"Unsustainable consumption habits rapidly deplete natural resources worldwide.",q:"Overfishing and mining rapidly ___ natural resources.",opts:["deplete","delete","empty","finish"],ans:0},
+  {id:24,phrase:"adopt eco-friendly practices",meaning:"áp dụng các thói quen thân thiện môi trường",topic:"Môi trường",flow:"Giải pháp",basic:"do green habits",para:"embrace sustainable lifestyles / implement green measures",trap:"adopt (áp dụng) khác adapt (thích nghi)",example:"Governments should incentivize corporations to adopt eco-friendly practices.",q:"More consumers are willing to ___ eco-friendly practices.",opts:["adopt","adapt","adept","accept"],ans:0},
+  {id:25,phrase:"impose strict regulations on",meaning:"áp đặt quy định nghiêm ngặt lên",topic:"Môi trường",flow:"Giải pháp",basic:"make hard rules for",para:"enforce stringent laws / introduce tough penalties",trap:"impose sth ON sb/sth (không dùng impose TO)",example:"Authorities must impose strict regulations on industrial waste disposal.",q:"The state should impose strict regulations ___ plastic producers.",opts:["to","for","on","at"],ans:2},
+  {id:26,phrase:"exert a detrimental impact on",meaning:"gây tác động bất lợi lên",topic:"Môi trường",flow:"Hệ quả",basic:"have a bad effect on",para:"have an adverse effect on / cause severe harm to",trap:"impact ON (không dùng impact TO)",example:"Single-use plastics exert a detrimental impact on marine ecosystems.",q:"Deforestation exerts a detrimental impact ___ biodiversity.",opts:["to","on","in","with"],ans:1},
+  {id:27,phrase:"transition to renewable energy",meaning:"chuyển đổi sang năng lượng tái tạo",topic:"Môi trường",flow:"Giải pháp",basic:"change to clean energy",para:"shift toward green power / phase out fossil fuels",trap:"transition TO (dùng như động từ hoặc danh từ)",example:"Subsidies can accelerate the transition to renewable energy in developing nations.",q:"Countries must transition ___ renewable energy sources.",opts:["on","at","to","for"],ans:2},
+  {id:28,phrase:"raise public awareness of",meaning:"nâng cao nhận thức cộng đồng về",topic:"Môi trường",flow:"Giải pháp",basic:"make people know more about",para:"educate the public about / promote environmental consciousness",trap:"awareness OF (hoặc about), dùng động từ raise (không dùng rise)",example:"School campaigns help raise public awareness of food waste reduction.",q:"Media campaigns can ___ public awareness of recycling.",opts:["raise","rise","arise","lift"],ans:0},
+  {id:29,phrase:"irreversible environmental damage",meaning:"thiệt hại môi trường không thể đảo ngược",topic:"Môi trường",flow:"Hệ quả",basic:"bad damage that cannot be fixed",para:"permanent ecological harm / irreparable destruction",trap:"damage không đếm được (không thêm 's')",example:"Delayed action against pollution could result in irreversible environmental damage.",q:"Oil spills cause irreversible environmental ___.",opts:["damage","damages","a damage","harming"],ans:0},
+  {id:30,phrase:"preserve biodiversity",meaning:"bảo tồn đa dạng sinh học",topic:"Môi trường",flow:"Giải pháp",basic:"protect animals and plants",para:"safeguard wildlife habitats / protect endangered species",trap:"biodiversity là danh từ không đếm được",example:"Establishing national parks is vital to preserve biodiversity for future generations.",q:"Protected reserves are crucial to ___ biodiversity.",opts:["preserve","reserve","conserve to","keep up"],ans:0},
+
+  // SỨC KHỎE (10)
+  {id:31,phrase:"lead a sedentary lifestyle",meaning:"sống lối sống ít vận động",topic:"Sức khỏe",flow:"Nguyên nhân",basic:"sit too much and not exercise",para:"live an inactive life / lack physical activity",trap:"dùng động từ lead/live + a sedentary lifestyle",example:"Office workers who lead a sedentary lifestyle face higher risks of heart disease.",q:"Many urban residents ___ a sedentary lifestyle.",opts:["lead","do","make","stay"],ans:0},
+  {id:32,phrase:"be prone to",meaning:"dễ mắc phải / dễ bị tổn thương bởi",topic:"Sức khỏe",flow:"Hệ quả",basic:"easily get (a disease)",para:"be susceptible to / be vulnerable to",trap:"be prone TO + N / V-ing",example:"Children who consume excessive sugar are more prone to obesity and tooth decay.",q:"Sleep-deprived students are more prone ___ anxiety.",opts:["for","to","with","of"],ans:1},
+  {id:33,phrase:"take a toll on",meaning:"gây ảnh hưởng xấu / bào mòn",topic:"Sức khỏe",flow:"Hệ quả",basic:"hurt badly over time",para:"undermine / have a damaging effect on",trap:"take a heavy toll ON (giới từ ON)",example:"Chronic work stress can take a heavy toll on both mental and physical health.",q:"Long working hours take a serious toll ___ well-being.",opts:["in","to","on","at"],ans:2},
+  {id:34,phrase:"alleviate mental fatigue",meaning:"giảm bớt mệt mỏi tinh thần",topic:"Sức khỏe",flow:"Giải pháp",basic:"make the mind less tired",para:"relieve psychological stress / recharge mentally",trap:"fatigue không đếm được",example:"Regular sleep schedules help students alleviate mental fatigue during exam season.",q:"Short breaks during study help ___ mental fatigue.",opts:["alleviate","decline","drop","fall"],ans:0},
+  {id:35,phrase:"adopt a balanced diet",meaning:"áp dụng chế độ ăn cân bằng",topic:"Sức khỏe",flow:"Giải pháp",basic:"eat healthy food",para:"maintain nutritious eating habits / consume whole foods",trap:"adopt + a balanced diet (có mạo từ 'a')",example:"Encouraging citizens to adopt a balanced diet lowers long-term healthcare costs.",q:"Doctors advise patients to ___ a balanced diet.",opts:["adopt","adapt","take up to","do"],ans:0},
+  {id:36,phrase:"curb the consumption of",meaning:"hạn chế việc tiêu thụ",topic:"Sức khỏe",flow:"Giải pháp",basic:"make people eat/drink less",para:"limit the intake of / discourage overconsumption",trap:"consumption OF + N",example:"Higher taxes on sugary drinks can effectively curb the consumption of junk food.",q:"Sugar taxes aim to curb the consumption ___ soft drinks.",opts:["for","of","in","to"],ans:1},
+  {id:37,phrase:"pose a serious health risk",meaning:"gây ra rủi ro sức khỏe nghiêm trọng",topic:"Sức khỏe",flow:"Hệ quả",basic:"be very bad for health",para:"endanger public health / jeopardize physical well-being",trap:"pose a risk (to sb/sth)",example:"Air pollution in megacities poses a serious health risk to elderly residents.",q:"Processed meat can ___ a serious health risk if eaten daily.",opts:["pose","give","put","make"],ans:0},
+  {id:38,phrase:"strain the healthcare system",meaning:"gây áp lực lên hệ thống y tế",topic:"Sức khỏe",flow:"Hệ quả",basic:"make hospitals too busy",para:"overburden medical services / put pressure on hospitals",trap:"strain + N (động từ) hoặc put a strain ON",example:"An aging population will inevitably strain the national healthcare system.",q:"Rising chronic illnesses heavily ___ the healthcare system.",opts:["strain","stress to","push","press"],ans:0},
+  {id:39,phrase:"prioritize preventive healthcare",meaning:"ưu tiên y tế dự phòng",topic:"Sức khỏe",flow:"Giải pháp",basic:"stop sickness before it starts",para:"invest in early detection / focus on disease prevention",trap:"preventive (hoặc preventative) đều đúng, không dùng 'preventing healthcare'",example:"Governments should prioritize preventive healthcare rather than solely funding hospitals.",q:"It is cheaper to prioritize ___ healthcare than treatment.",opts:["preventive","preventing","prevention","prevented"],ans:0},
+  {id:40,phrase:"boost overall well-being",meaning:"nâng cao sức khỏe và hạnh phúc tổng thể",topic:"Sức khỏe",flow:"Hệ quả",basic:"make life healthier and happier",para:"enhance quality of life / promote holistic health",trap:"well-being có gạch nối, không đếm được",example:"Access to green parks in cities can significantly boost residents' overall well-being.",q:"Daily exercise is proven to ___ overall well-being.",opts:["boost","rise","grow up","lift up"],ans:0},
+
+  // XÃ HỘI & KINH TẾ (10)
+  {id:41,phrase:"widen the wealth gap",meaning:"nới rộng khoảng cách giàu nghèo",topic:"Xã hội & Kinh tế",flow:"Hệ quả",basic:"make rich and poor more different",para:"deepen economic inequality / exacerbate income disparity",trap:"widen the gap (tránh dùng 'enlarge the gap')",example:"Unchecked inflation tends to widen the wealth gap between high and low earners.",q:"Unequal access to capital can ___ the wealth gap.",opts:["widen","enlarge","big","broad"],ans:0},
+  {id:42,phrase:"allocate funding to",meaning:"phân bổ ngân sách cho",topic:"Xã hội & Kinh tế",flow:"Giải pháp",basic:"give money to",para:"channel resources into / direct state budgets toward",trap:"allocate sth TO sth (không dùng allocate FOR)",example:"Municipalities should allocate more funding to affordable public housing.",q:"The government should allocate more funding ___ public transport.",opts:["for","to","in","at"],ans:1},
+  {id:43,phrase:"stimulate economic growth",meaning:"kích thích tăng trưởng kinh tế",topic:"Xã hội & Kinh tế",flow:"Hệ quả",basic:"help the economy grow",para:"boost economic development / drive prosperity",trap:"growth không đếm được (không dùng 'an economic growth')",example:"Supporting small startups is a proven strategy to stimulate economic growth.",q:"Infrastructure projects can ___ economic growth.",opts:["stimulate","rise","grow","push up"],ans:0},
+  {id:44,phrase:"alleviate financial burdens",meaning:"giảm bớt gánh nặng tài chính",topic:"Xã hội & Kinh tế",flow:"Giải pháp",basic:"make money problems easier",para:"ease economic hardship / relieve cost-of-living pressures",trap:"burden ON sb",example:"Childcare subsidies help alleviate financial burdens on working parents.",q:"Tax cuts can help ___ financial burdens on young families.",opts:["alleviate","drop","fall","decline"],ans:0},
+  {id:45,phrase:"foster social cohesion",meaning:"thúc đẩy sự gắn kết xã hội",topic:"Xã hội & Kinh tế",flow:"Hệ quả",basic:"bring society together",para:"strengthen community bonds / promote social harmony",trap:"cohesion là danh từ không đếm được",example:"Community festivals play an important role in fostering social cohesion.",q:"Public libraries help ___ social cohesion in neighborhoods.",opts:["foster","make","do","join"],ans:0},
+  {id:46,phrase:"cope with the rising cost of living",meaning:"đối phó với chi phí sinh hoạt tăng cao",topic:"Xã hội & Kinh tế",flow:"Nguyên nhân",basic:"deal with expensive life",para:"manage escalating living expenses / struggle with inflation",trap:"cope WITH (không dùng cope UP WITH)",example:"Many graduates struggle to cope with the rising cost of living in capital cities.",q:"Low-income households struggle to ___ the rising cost of living.",opts:["cope with","cope up with","deal","handle with"],ans:0},
+  {id:47,phrase:"create lucrative job opportunities",meaning:"tạo ra cơ hội việc làm thu nhập cao",topic:"Xã hội & Kinh tế",flow:"Hệ quả",basic:"make good-paying jobs",para:"generate well-paid employment / open career prospects",trap:"lucrative chỉ dùng cho công việc/kinh doanh sinh lời cao",example:"Foreign investment can create lucrative job opportunities for local engineers.",q:"The tech boom has created ___ job opportunities.",opts:["lucrative","wealthy","rich","expensive"],ans:0},
+  {id:48,phrase:"be attributed to",meaning:"được quy cho / bắt nguồn từ",topic:"Xã hội & Kinh tế",flow:"Nguyên nhân",basic:"be caused by",para:"stem from / result from",trap:"be attributed TO (không dùng attributed BY/FROM)",example:"The rise in urban traffic congestion can be attributed to inadequate public transit.",q:"High youth unemployment can be attributed ___ a skills mismatch.",opts:["by","from","to","for"],ans:2},
+  {id:49,phrase:"erode traditional values",meaning:"xói mòn các giá trị truyền thống",topic:"Xã hội & Kinh tế",flow:"Phản biện",basic:"slowly destroy old traditions",para:"undermine cultural heritage / weaken long-standing customs",trap:"erode mang nghĩa bào mòn dần theo thời gian",example:"Some critics argue that rapid globalization may erode traditional values.",q:"Commercial tourism can gradually ___ traditional values.",opts:["erode","break","cut","fall"],ans:0},
+  {id:50,phrase:"reap the benefits of",meaning:"gặt hái lợi ích từ",topic:"Xã hội & Kinh tế",flow:"Hệ quả",basic:"get good results from",para:"capitalize on / derive advantages from",trap:"reap THE benefits OF (thường có 'the' và 'benefits' số nhiều)",example:"Cities that invest in cycling lanes soon reap the benefits of cleaner air.",q:"Developing nations can ___ the benefits of global trade.",opts:["reap","take","catch","win"],ans:0},
+
+  // TASK 1 (10)
+  {id:51,phrase:"experience a steady upward trend",meaning:"trải qua xu hướng tăng đều đặn",topic:"Task 1",flow:"Số liệu",basic:"go up slowly and steadily",para:"witness a gradual rise / follow an ascending trajectory",trap:"trend không dùng với động từ 'increase' (không nói 'trend increased')",example:"Solar power generation experienced a steady upward trend between 2010 and 2020.",q:"Online retail sales ___ a steady upward trend.",opts:["experienced","increased","grew up","rose"],ans:0},
+  {id:52,phrase:"account for the largest proportion",meaning:"chiếm tỷ trọng lớn nhất",topic:"Task 1",flow:"Số liệu",basic:"have the biggest percentage",para:"constitute the highest share / make up the majority",trap:"account FOR (luôn đi với giới từ FOR)",example:"Housing costs accounted for the largest proportion of household spending in 2022.",q:"Food and rent ___ the largest proportion of total expenditure.",opts:["accounted for","accounted of","made for","took of"],ans:0},
+  {id:53,phrase:"remain relatively stable",meaning:"duy trì tương đối ổn định",topic:"Task 1",flow:"Số liệu",basic:"stay almost the same",para:"show minimal fluctuation / stay largely unchanged",trap:"remain + Adj (stable, không dùng stably)",example:"Despite minor dips, coal consumption remained relatively stable throughout the decade.",q:"The unemployment rate remained relatively ___ from 2015 to 2018.",opts:["stable","stably","stability","stabilize"],ans:0},
+  {id:54,phrase:"witness a sharp decline",meaning:"chứng kiến sự sụt giảm mạnh",topic:"Task 1",flow:"Số liệu",basic:"go down very fast",para:"experience a steep drop / plummet significantly",trap:"decline IN + đối tượng (vd: a sharp decline in sales)",example:"Newspaper readership witnessed a sharp decline after smartphones became mainstream.",q:"There was a sharp decline ___ print newspaper sales.",opts:["of","in","on","at"],ans:1},
+  {id:55,phrase:"reach a peak of",meaning:"đạt đỉnh ở mức",topic:"Task 1",flow:"Số liệu",basic:"go to the highest number",para:"peak at / hit an all-time high of",trap:"reach a peak OF + số liệu; nhưng động từ 'peak AT' + số liệu",example:"Tourist arrivals reached a peak of 4.5 million in August before falling.",q:"Electricity demand reached a peak ___ 800 megawatts.",opts:["at","of","to","on"],ans:1},
+  {id:56,phrase:"outnumber ... by a wide margin",meaning:"vượt trội về số lượng với cách biệt lớn",topic:"Task 1",flow:"Số liệu",basic:"be much more than",para:"significantly exceed / surpass considerably",trap:"outnumber dùng cho người/vật đếm được, không dùng cho phần trăm chung chung",example:"Female applicants outnumbered male counterparts by a wide margin in nursing.",q:"Full-time students outnumbered part-time ones by a wide ___.",opts:["margin","distance","space","size"],ans:0},
+  {id:57,phrase:"fluctuate moderately",meaning:"biến động ở mức vừa phải",topic:"Task 1",flow:"Số liệu",basic:"go up and down a bit",para:"vary slightly / experience mild oscillations",trap:"fluctuate là nội động từ, không dùng thể bị động (không dùng 'was fluctuated')",example:"Wheat prices fluctuated moderately around $200 per ton over the five-year period.",q:"Gold prices ___ moderately throughout the first quarter.",opts:["fluctuated","were fluctuated","fluctuated up","had fluctuation"],ans:0},
+  {id:58,phrase:"undergo a major transformation",meaning:"trải qua sự biến đổi lớn (Map)",topic:"Task 1",flow:"Số liệu",basic:"change a lot",para:"be extensively redeveloped / experience dramatic changes",trap:"undergo là ngoại động từ, không dùng bị động 'was undergone'",example:"Between 1995 and 2020, the coastal town underwent a major transformation.",q:"The city center ___ a major transformation over 20 years.",opts:["underwent","was undergone","changed to","became"],ans:0},
+  {id:59,phrase:"make way for",meaning:"nhường chỗ cho (Map)",topic:"Task 1",flow:"Số liệu",basic:"be removed to build",para:"be replaced by / be demolished in favor of",trap:"make way FOR (không dùng make way TO)",example:"The old warehouse in the north was demolished to make way for a shopping mall.",q:"The farmland was cleared to make way ___ a new highway.",opts:["to","for","of","into"],ans:1},
+  {id:60,phrase:"in stark contrast to",meaning:"trái ngược hoàn toàn với",topic:"Task 1",flow:"Số liệu",basic:"very different from",para:"whereas / conversely / compared starkly with",trap:"in stark contrast TO + N (không dùng với mệnh đề có V)",example:"In stark contrast to Japan, Brazil recorded a rapid rise in birth rates.",q:"In stark contrast ___ Europe, Asia saw rapid urban growth.",opts:["with","to","from","than"],ans:1}
+];
+
+const STORAGE_KEY = "lexiwrite_v3_data";
+const META_KEY = "lexiwrite_v3_meta";
+const TOPICS = ["Tất cả","Giáo dục","Công nghệ","Môi trường","Sức khỏe","Xã hội & Kinh tế","Task 1"];
+
+let words = [];
+let meta = { dark: false, streak: 0, lastStudy: "" };
+let curTab = "bank";
+let curTopic = "Tất cả";
+let curFilter = "all"; // all, due, hard, master
+let curMode = "flash";
+let curScope = "due"; // due, hard, all, Task 1...
+let editingId = null;
+let pIdx = 0, pList = [], flipped = false, quizLocked = false;
+let audioRunning = false, audioTimer = null, audioSpeed = 0.9;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      words = JSON.parse(raw);
+    } else {
+      words = DEFAULT_WORDS.map(w => ({...w, level:0, nextReview:0, wrongCount:0}));
+      saveWords();
+    }
+    const m = localStorage.getItem(META_KEY);
+    if (m) meta = {...meta, ...JSON.parse(m)};
+  } catch(e) {
+    words = DEFAULT_WORDS.map(w => ({...w, level:0, nextReview:0, wrongCount:0}));
+  }
+  document.body.classList.toggle("dark", !!meta.dark);
+  document.getElementById("darkBtn").textContent = meta.dark ? "☀️" : "🌙";
+}
+function saveWords() { localStorage.setItem(STORAGE_KEY, JSON.stringify(words)); }
+function saveMeta() { localStorage.setItem(META_KEY, JSON.stringify(meta)); }
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("show"), 1800);
+}
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function markStudied() {
+  const t = todayStr();
+  if (meta.lastStudy !== t) {
+    const y = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    meta.streak = (meta.lastStudy === y) ? (meta.streak + 1) : 1;
+    meta.lastStudy = t;
+    saveMeta();
+  }
+}
+function speak(text, rate=0.95) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = rate;
+  window.speechSynthesis.speak(u);
+}
+function isDue(w) { return !w.nextReview || w.nextReview <= Date.now(); }
+
+function renderHeader() {
+  const due = words.filter(isDue).length;
+  document.getElementById("headerSub").textContent = `${words.length} cụm từ • ${due} cần ôn`;
+}
+
+// ---------- TAB 1: BANK ----------
+function renderBank() {
+  renderHeader();
+  document.getElementById("topicChips").innerHTML = TOPICS.map(t =>
+    `<button class="chip ${curTopic===t?'active':''}" onclick="setTopic('${t}')">${t}</button>`
+  ).join("");
+
+  const filters = [
+    ["all","Tất cả"],
+    ["due",`Cần ôn (${words.filter(isDue).length})`],
+    ["hard",`🔥 Hay quên (${words.filter(w=>w.wrongCount>=2).length})`],
+    ["master",`Đã thuộc (${words.filter(w=>w.level>=3).length})`]
+  ];
+  document.getElementById("filterChips").innerHTML = filters.map(([k,l]) =>
+    `<button class="chip ${curFilter===k?'active':''}" onclick="setFilter('${k}')">${l}</button>`
+  ).join("");
+
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const list = words.filter(w => {
+    if (curTopic !== "Tất cả" && w.topic !== curTopic) return false;
+    if (curFilter === "due" && !isDue(w)) return false;
+    if (curFilter === "hard" && w.wrongCount < 2) return false;
+    if (curFilter === "master" && w.level < 3) return false;
+    if (q) {
+      const hay = `${w.phrase} ${w.meaning} ${w.para||""} ${w.basic||""}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const el = document.getElementById("vocabList");
+  if (!list.length) {
+    el.innerHTML = `<div class="card" style="text-align:center;color:var(--muted);padding:28px;">Không tìm thấy cụm từ phù hợp.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(w => `
+    <div class="card">
+      <div class="row">
+        <div class="phrase">${esc(w.phrase)}</div>
+        <div style="display:flex;gap:6px;">
+          <button class="icon-btn" style="width:32px;height:32px;font-size:14px;" onclick="speak(${JSON.stringify(w.phrase)})">🔊</button>
+          <button class="icon-btn" style="width:32px;height:32px;font-size:13px;" onclick="startEdit(${w.id})">✏️</button>
+        </div>
+      </div>
+      <div class="meaning">${esc(w.meaning)}</div>
+      <div class="badges">
+        <span class="badge">${esc(w.topic)}</span>
+        <span class="badge purple">${esc(w.flow||"Lập luận")}</span>
+        ${w.level>=3 ? `<span class="badge green">Đã thuộc</span>` : `<span class="badge orange">Mức ${w.level||0}/3</span>`}
+        ${w.wrongCount>=2 ? `<span class="badge red">🔥 Hay quên</span>` : ``}
+      </div>
+      ${w.basic ? `<div class="box upgrade"><b>Nâng cấp từ 5.5:</b> ${esc(w.basic)}${w.para ? `<br><b>Paraphrase:</b> ${esc(w.para)}` : ""}</div>` : ""}
+      ${w.trap ? `<div class="box trap"><b>⚠️ Bẫy ngữ pháp:</b> ${esc(w.trap)}</div>` : ""}
+      ${w.example ? `<div class="box example"><b>Ví dụ:</b> ${esc(w.example)}</div>` : ""}
+      <div class="row" style="margin-top:10px;">
+        <button class="btn sec sm" onclick="deleteWord(${w.id})" style="color:var(--red);">Xóa</button>
+        <button class="btn sm ${w.level>=3?'green':'sec'}" onclick="toggleMaster(${w.id})">${w.level>=3?'✓ Đã thuộc':'Đánh dấu thuộc'}</button>
+      </div>
+    </div>
+  `).join("");
+}
+function setTopic(t){ curTopic=t; renderBank(); }
+function setFilter(f){ curFilter=f; renderBank(); }
+function toggleMaster(id){
+  const w = words.find(x=>x.id===id); if(!w) return;
+  if(w.level>=3){ w.level=0; w.nextReview=0; } else { w.level=3; w.nextReview=Date.now()+7*86400000; markStudied(); }
+  saveWords(); renderBank();
+}
+function deleteWord(id){
+  if(!confirm("Xóa cụm từ này khỏi kho?")) return;
+  words = words.filter(x=>x.id!==id);
+  saveWords(); renderBank(); toast("Đã xóa cụm từ");
+}
+
+// ---------- TAB 2: PRACTICE ----------
+function buildPracticeList() {
+  if (curScope === "due") pList = words.filter(isDue);
+  else if (curScope === "hard") pList = words.filter(w => w.wrongCount >= 2);
+  else if (curScope === "all") pList = [...words];
+  else pList = words.filter(w => w.topic === curScope);
+  if (curMode === "trap") pList = pList.filter(w => w.q && w.opts);
+  pList.sort(() => Math.random() - 0.5);
+  pIdx = 0; flipped = false; quizLocked = false;
+}
+function renderPractice() {
+  stopAudioLoop();
+  const scopes = [
+    ["due", `Cần ôn (${words.filter(isDue).length})`],
+    ["hard", `🔥 Hay quên (${words.filter(w=>w.wrongCount>=2).length})`],
+    ["all", "Tất cả"],
+    ...TOPICS.slice(1).map(t => [t, t])
+  ];
+  document.getElementById("practiceScopeChips").innerHTML = scopes.map(([k,l]) =>
+    `<button class="chip ${curScope===k?'active':''}" onclick="setScope('${k}')">${l}</button>`
+  ).join("");
+
+  const area = document.getElementById("practiceArea");
+  if (!pList.length) {
+    area.innerHTML = `<div class="card" style="text-align:center;padding:32px;">
+      <div style="font-size:32px;margin-bottom:8px;">🎉</div>
+      <strong>Không có từ nào trong nhóm này!</strong>
+      <p style="font-size:13px;color:var(--sub);">Hãy chọn phạm vi "Tất cả" hoặc chuyển chủ đề khác để luyện thêm.</p>
+      <button class="btn" onclick="setScope('all')">Ôn toàn bộ kho từ</button>
+    </div>`;
+    return;
+  }
+  const w = pList[pIdx % pList.length];
+
+  if (curMode === "flash") {
+    area.innerHTML = `
+      <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:6px;">
+        Thẻ ${(pIdx % pList.length)+1} / ${pList.length} • Chạm để lật • Vuốt trái (Quên) / Vuốt phải (Thuộc)
+      </div>
+      <div class="card flashcard" id="flashCard">
+        <span class="badge" style="margin-bottom:10px;">${esc(w.topic)} • ${esc(w.flow||"")}</span>
+        <div class="phrase" style="font-size:22px;">${esc(w.phrase)}</div>
+        <button class="btn sec sm" style="margin-top:12px;" onclick="event.stopPropagation();speak(${JSON.stringify(w.phrase)})">🔊 Nghe phát âm</button>
+        ${flipped ? `
+          <div style="width:100%;margin-top:16px;text-align:left;border-top:1px solid var(--border);padding-top:12px;">
+            <div style="font-size:15px;font-weight:600;margin-bottom:6px;">${esc(w.meaning)}</div>
+            ${w.basic?`<div class="box upgrade"><b>5.5 → 7.0+:</b> ${esc(w.basic)}<br><b>Paraphrase:</b> ${esc(w.para||"-")}</div>`:""}
+            ${w.trap?`<div class="box trap"><b>⚠️ Bẫy:</b> ${esc(w.trap)}</div>`:""}
+            ${w.example?`<div class="box example">${esc(w.example)}</div>`:""}
+          </div>
+        ` : `<div style="font-size:13px;color:var(--muted);margin-top:22px;">Chạm vào thẻ để xem nghĩa & bẫy ngữ pháp</div>`}
+      </div>
+      <div class="srs-grid">
+        <button class="btn red sm" onclick="rateWord(${w.id},0)">Quên<br><small>Ôn ngay</small></button>
+        <button class="btn orange sm" onclick="rateWord(${w.id},1)">Khó<br><small>1 ngày</small></button>
+        <button class="btn sm" onclick="rateWord(${w.id},2)">Tốt<br><small>3 ngày</small></button>
+        <button class="btn green sm" onclick="rateWord(${w.id},3)">Dễ<br><small>7 ngày</small></button>
+      </div>
+    `;
+    bindSwipe(w.id);
+  } else if (curMode === "trap") {
+    area.innerHTML = `
+      <div class="card">
+        <div class="row" style="margin-bottom:10px;">
+          <span class="badge red">Bắt bẫy giới từ & Collocation</span>
+          <span style="font-size:12px;color:var(--muted);">${(pIdx % pList.length)+1} / ${pList.length}</span>
+        </div>
+        <div style="font-size:17px;font-weight:700;line-height:1.45;margin-bottom:10px;">${esc(w.q)}</div>
+        <div style="font-size:13px;color:var(--sub);margin-bottom:10px;">Gợi ý nghĩa: ${esc(w.meaning)}</div>
+        <div id="quizOpts">
+          ${w.opts.map((o,i)=>`<button class="quiz-opt" onclick="pickQuiz(${w.id},${i})">${esc(o)}</button>`).join("")}
+        </div>
+        <div id="quizFeedback" class="hidden" style="margin-top:12px;"></div>
+      </div>
+    `;
+  } else if (curMode === "type") {
+    const hint = w.phrase.split(" ").map(x => x[0] + "_".repeat(Math.max(1,x.length-1))).join(" ");
+    area.innerHTML = `
+      <div class="card">
+        <div class="row" style="margin-bottom:8px;">
+          <span class="badge green">Nâng cấp từ vựng</span>
+          <span style="font-size:12px;color:var(--muted);">${(pIdx % pList.length)+1} / ${pList.length}</span>
+        </div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;">${esc(w.meaning)}</div>
+        ${w.basic?`<div class="box upgrade" style="margin-bottom:10px;"><b>Thay cho Band 5.5:</b> ${esc(w.basic)}</div>`:""}
+        <input id="typeAns" class="search-box" placeholder="Gõ cụm từ Band 7.0–7.5..." autocomplete="off" autocorrect="off" autocapitalize="off">
+        <div style="display:flex;gap:8px;">
+          <button class="btn sec" style="flex:1;" onclick="document.getElementById('hintTxt').classList.remove('hidden')">Gợi ý</button>
+          <button class="btn" style="flex:2;" onclick="checkType(${w.id})">Kiểm tra</button>
+        </div>
+        <div id="hintTxt" class="hidden" style="margin-top:10px;font-size:13px;color:var(--orange);font-weight:600;">
+          Gợi ý: ${esc(hint)}${w.trap ? `<br>⚠️ ${esc(w.trap)}` : ""}
+        </div>
+        <div id="typeFeedback" class="hidden" style="margin-top:10px;"></div>
+      </div>
+    `;
+  } else if (curMode === "audio") {
+    area.innerHTML = `
+      <div class="card" style="text-align:center;padding:24px 16px;">
+        <span class="badge purple">Nghe thụ động (Audio Loop)</span>
+        <div class="phrase" style="font-size:22px;margin:14px 0 6px;" id="auPhrase">${esc(w.phrase)}</div>
+        <div class="meaning" id="auMean">${esc(w.meaning)}</div>
+        <div class="box example" style="text-align:left;margin-bottom:16px;" id="auEx">${esc(w.example||"")}</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;">
+          <button class="btn sec sm" onclick="audioSpeed=0.8;toast('Tốc độ 0.8x')">0.8x</button>
+          <button class="btn sec sm" onclick="audioSpeed=0.95;toast('Tốc độ chuẩn')">1.0x</button>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" style="flex:1;" id="auToggleBtn" onclick="toggleAudioLoop()">▶ Bắt đầu phát tự động</button>
+          <button class="btn sec" onclick="pIdx++;renderPractice();">Tiếp ⏭</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function bindSwipe(id) {
+  const card = document.getElementById("flashCard");
+  if (!card) return;
+  let sx = 0, dx = 0;
+  card.onclick = () => { if (Math.abs(dx) < 10) { flipped = !flipped; renderPractice(); } };
+  card.addEventListener("touchstart", e => { sx = e.touches[0].clientX; dx = 0; }, {passive:true});
+  card.addEventListener("touchmove", e => {
+    dx = e.touches[0].clientX - sx;
+    card.style.transform = `translateX(${dx*0.4}px) rotate(${dx*0.02}deg)`;
+  }, {passive:true});
+  card.addEventListener("touchend", () => {
+    card.style.transform = "";
+    if (dx > 85) rateWord(id, 3);
+    else if (dx < -85) rateWord(id, 0);
+  });
+}
+
+function rateWord(id, score) {
+  const w = words.find(x => x.id === id);
+  if (w) {
+    const days = [0, 1, 3, 7][score];
+    w.level = score;
+    w.nextReview = days === 0 ? 0 : Date.now() + days * 86400000;
+    if (score === 0) w.wrongCount = (w.wrongCount || 0) + 1;
+    saveWords(); markStudied();
+  }
+  pIdx++; flipped = false; renderPractice();
+}
+
+function pickQuiz(id, idx) {
+  if (quizLocked) return;
+  quizLocked = true;
+  const w = words.find(x => x.id === id);
+  const btns = document.querySelectorAll("#quizOpts .quiz-opt");
+  const ok = idx === w.ans;
+  btns[w.ans].classList.add("ok");
+  if (!ok) {
+    btns[idx].classList.add("no");
+    w.wrongCount = (w.wrongCount || 0) + 1;
+    w.level = 0; w.nextReview = 0;
+  } else {
+    w.level = Math.min(3, (w.level || 0) + 1);
+    w.nextReview = Date.now() + 3 * 86400000;
+    markStudied();
+  }
+  saveWords();
+  const fb = document.getElementById("quizFeedback");
+  fb.classList.remove("hidden");
+  fb.innerHTML = `
+    <div class="box ${ok?'upgrade':'trap'}">
+      <b>${ok ? '✅ Chính xác!' : '❌ Sai rồi — đã đẩy vào nhóm Hay quên'}</b><br>
+      <b>Cụm chuẩn:</b> ${esc(w.phrase)}<br>
+      <b>Bẫy:</b> ${esc(w.trap||"")}
+    </div>
+    <button class="btn" style="width:100%;margin-top:10px;" onclick="pIdx++;quizLocked=false;renderPractice();">Câu tiếp theo →</button>
+  `;
+}
+
+function checkType(id) {
+  const w = words.find(x => x.id === id);
+  const val = document.getElementById("typeAns").value.trim().toLowerCase().replace(/\s+/g," ");
+  const target = w.phrase.toLowerCase().replace(/\s+/g," ");
+  const ok = val === target;
+  if (ok) { w.level = Math.min(3,(w.level||0)+1); w.nextReview = Date.now() + 3*86400000; markStudied(); }
+  else { w.wrongCount = (w.wrongCount||0)+1; }
+  saveWords();
+  const fb = document.getElementById("typeFeedback");
+  fb.classList.remove("hidden");
+  fb.innerHTML = `
+    <div class="box ${ok?'upgrade':'trap'}">
+      <b>${ok ? '✅ Chuẩn xác!' : '❌ Chưa khớp'}</b><br>
+      <b>Đáp án:</b> ${esc(w.phrase)}<br>
+      ${w.example ? `<b>Ví dụ:</b> ${esc(w.example)}` : ""}
+    </div>
+    <button class="btn" style="width:100%;margin-top:10px;" onclick="pIdx++;renderPractice();">Từ tiếp theo →</button>
+  `;
+}
+
+function toggleAudioLoop() {
+  if (audioRunning) { stopAudioLoop(); return; }
+  audioRunning = true;
+  document.getElementById("auToggleBtn").textContent = "⏹ Dừng phát";
+  playAudioStep();
+}
+function stopAudioLoop() {
+  audioRunning = false;
+  clearTimeout(audioTimer);
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  const b = document.getElementById("auToggleBtn");
+  if (b) b.textContent = "▶ Bắt đầu phát tự động";
+}
+function playAudioStep() {
+  if (!audioRunning || !pList.length) return;
+  const w = pList[pIdx % pList.length];
+  const pEl = document.getElementById("auPhrase");
+  if (pEl) {
+    pEl.textContent = w.phrase;
+    document.getElementById("auMean").textContent = w.meaning;
+    document.getElementById("auEx").textContent = w.example || "";
+  }
+  speak(w.phrase, audioSpeed);
+  audioTimer = setTimeout(() => {
+    if (!audioRunning) return;
+    if (w.example) speak(w.example, audioSpeed);
+    audioTimer = setTimeout(() => {
+      if (!audioRunning) return;
+      pIdx++;
+      playAudioStep();
+    }, 5200);
+  }, 2600);
+}
+
+function setScope(s) { curScope = s; buildPracticeList(); renderPractice(); }
+
+// ---------- TAB 3: ADD / EDIT ----------
+function startEdit(id) {
+  const w = words.find(x=>x.id===id); if(!w) return;
+  editingId = id;
+  document.getElementById("formTitle").textContent = "Chỉnh sửa cụm từ";
+  document.getElementById("cancelEditBtn").classList.remove("hidden");
+  document.getElementById("fPhrase").value = w.phrase || "";
+  document.getElementById("fMeaning").value = w.meaning || "";
+  document.getElementById("fTopic").value = w.topic || "Giáo dục";
+  document.getElementById("fFlow").value = w.flow || "Nguyên nhân";
+  document.getElementById("fBasic").value = w.basic || "";
+  document.getElementById("fPara").value = w.para || "";
+  document.getElementById("fTrap").value = w.trap || "";
+  document.getElementById("fExample").value = w.example || "";
+  switchTab("add");
+}
+function clearForm() {
+  editingId = null;
+  document.getElementById("formTitle").textContent = "Thêm cụm từ mới";
+  document.getElementById("cancelEditBtn").classList.add("hidden");
+  ["fPhrase","fMeaning","fBasic","fPara","fTrap","fExample"].forEach(id => document.getElementById(id).value = "");
+}
+
+// ---------- TAB 4: STATS ----------
+function renderStats() {
+  renderHeader();
+  document.getElementById("stDue").textContent = words.filter(isDue).length;
+  document.getElementById("stMaster").textContent = words.filter(w=>w.level>=3).length;
+  document.getElementById("stStreak").textContent = meta.streak || 0;
+  document.getElementById("topicBars").innerHTML = TOPICS.slice(1).map(t => {
+    const all = words.filter(w=>w.topic===t);
+    const done = all.filter(w=>w.level>=3).length;
+    const pct = all.length ? Math.round(done/all.length*100) : 0;
+    return `<div style="margin-bottom:10px;">
+      <div class="row" style="font-size:13px;"><span>${t}</span><span style="color:var(--muted);">${done}/${all.length} (${pct}%)</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function switchTab(t) {
+  stopAudioLoop();
+  curTab = t;
+  document.querySelectorAll("main > section").forEach(s => s.classList.add("hidden"));
+  document.getElementById("tab-" + t).classList.remove("hidden");
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === t));
+  if (t === "bank") renderBank();
+  if (t === "practice") { buildPracticeList(); renderPractice(); }
+  if (t === "stats") renderStats();
+}
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ---------- EVENTS ----------
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchTab(b.dataset.tab));
+document.querySelectorAll("#modeSeg button").forEach(b => b.onclick = () => {
+  curMode = b.dataset.mode;
+  document.querySelectorAll("#modeSeg button").forEach(x => x.classList.toggle("active", x===b));
+  buildPracticeList(); renderPractice();
+});
+document.getElementById("searchInput").oninput = renderBank;
+document.getElementById("darkBtn").onclick = () => {
+  meta.dark = !meta.dark;
+  document.body.classList.toggle("dark", meta.dark);
+  document.getElementById("darkBtn").textContent = meta.dark ? "☀️" : "🌙";
+  saveMeta();
+};
+document.getElementById("cancelEditBtn").onclick = clearForm;
+document.getElementById("saveWordBtn").onclick = () => {
+  const phrase = document.getElementById("fPhrase").value.trim();
+  const meaning = document.getElementById("fMeaning").value.trim();
+  if (!phrase || !meaning) { toast("Cần nhập cụm từ và nghĩa Việt"); return; }
+  const obj = {
+    phrase, meaning,
+    topic: document.getElementById("fTopic").value,
+    flow: document.getElementById("fFlow").value,
+    basic: document.getElementById("fBasic").value.trim(),
+    para: document.getElementById("fPara").value.trim(),
+    trap: document.getElementById("fTrap").value.trim(),
+    example: document.getElementById("fExample").value.trim()
+  };
+  if (editingId) {
+    const idx = words.findIndex(w=>w.id===editingId);
+    if (idx >= 0) words[idx] = {...words[idx], ...obj};
+    toast("Đã cập nhật cụm từ");
+  } else {
+    words.unshift({id: Date.now(), ...obj, level:0, nextReview:0, wrongCount:0});
+    toast("Đã thêm vào kho từ");
+  }
+  saveWords(); clearForm(); switchTab("bank");
+};
+document.getElementById("fillSampleBtn").onclick = () => {
+  document.getElementById("bulkInput").value =
+    "curb urban sprawl | kiềm chế mở rộng đô thị tràn lan | Môi trường | stop city growing too fast | curb + N trực tiếp\n" +
+    "bridge the digital divide | thu hẹp khoảng cách số | Công nghệ | make internet equal | divide là danh từ số ít";
+};
+document.getElementById("bulkImportBtn").onclick = () => {
+  const lines = document.getElementById("bulkInput").value.split("\n").map(l=>l.trim()).filter(Boolean);
+  let added = 0;
+  lines.forEach((l, i) => {
+    const p = l.split("|").map(x=>x.trim());
+    if (p[0] && p[1]) {
+      words.unshift({
+        id: Date.now() + i, phrase: p[0], meaning: p[1],
+        topic: TOPICS.includes(p[2]) ? p[2] : "Xã hội & Kinh tế",
+        flow: "Lập luận", basic: p[3]||"", para: "", trap: p[4]||"", example: "",
+        level:0, nextReview:0, wrongCount:0
+      });
+      added++;
+    }
+  });
+  if (!added) { toast("Chưa có dòng hợp lệ"); return; }
+  saveWords(); document.getElementById("bulkInput").value = "";
+  toast(`Đã nhập ${added} cụm từ!`); switchTab("bank");
+};
+document.getElementById("exportBtn").onclick = () => {
+  const blob = new Blob([JSON.stringify(words, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "lexiwrite-backup.json";
+  a.click();
+};
+document.getElementById("importFile").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (Array.isArray(data)) { words = data; saveWords(); renderStats(); toast("Đã khôi phục dữ liệu!"); }
+    } catch { toast("Tệp JSON không hợp lệ"); }
+  };
+  r.readAsText(f);
+};
+document.getElementById("resetBtn").onclick = () => {
+  if (!confirm("Đặt lại toàn bộ về 60 từ mặc định?")) return;
+  words = DEFAULT_WORDS.map(w => ({...w, level:0, nextReview:0, wrongCount:0}));
+  saveWords(); renderStats(); toast("Đã đặt lại kho từ mặc định");
+};
+
+loadState();
+renderBank();
+</script>
+</body>
+</html>
