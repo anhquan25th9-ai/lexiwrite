@@ -1,0 +1,68 @@
+name: Build LexiWrite iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add iOS platform & sync web assets
+        run: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+          npx cap sync ios
+
+      - name: Apply custom App Icon (1024x1024)
+        run: |
+          ICON_DIR="ios/App/App/Assets.xcassets/AppIcon.appiconset"
+          rm -f "$ICON_DIR"/*.png
+          cp assets/icon-1024.png "$ICON_DIR/AppIcon-512@2x.png"
+          cp assets/Contents.json "$ICON_DIR/Contents.json"
+
+      - name: Build unsigned IPA
+        run: |
+          cd ios/App
+          if [ -d "App.xcworkspace" ]; then
+            BUILD_TARGET="-workspace App.xcworkspace"
+          else
+            BUILD_TARGET="-project App.xcodeproj"
+          fi
+
+          xcodebuild \
+            $BUILD_TARGET \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            BUILD_DIR="$PWD/build" \
+            clean build
+
+          mkdir -p Payload
+          cp -r build/Release-iphoneos/App.app Payload/
+          zip -r ../../LexiWrite.ipa Payload
+
+      - name: Upload LexiWrite.ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LexiWrite-IPA
+          path: LexiWrite.ipa
+          retention-days: 30
